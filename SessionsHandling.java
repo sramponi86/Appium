@@ -6,11 +6,17 @@ import org.junit.Before;
 import org.junit.Test;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Interaction;
+import org.openqa.selenium.interactions.PointerInput;
+import org.openqa.selenium.interactions.Sequence;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.lang.reflect.Array;
 import java.net.URL;
+import java.time.Duration;
+import java.util.Arrays;
 
 public class SessionsHandling {
 
@@ -89,5 +95,31 @@ public class SessionsHandling {
                 MobileBy.xpath("//android.widget.TextView[@content-desc=\"Testing!\"]")));
 
         assert(result.getText().contains("Testing!"));
+    }
+
+    @Test
+    public void Scroll() {
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        //WebElement element = driver.findElement(MobileBy.AccessibilityId("Login Screen"));
+        WebElement screen = wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("List Demo")));
+        screen.click();
+
+        WebElement list = wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("Altocumulus")));
+
+        PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
+        Interaction moveToStart = finger.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), 520, 1530);
+        Interaction pressDown = finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg());
+        Interaction moveToEnd = finger.createPointerMove(Duration.ofMillis(1000), PointerInput.Origin.viewport(), 520, 490);
+        Interaction pressUp = finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg());
+
+        Sequence Swipe = new Sequence(finger,0);
+        Swipe.addAction(moveToStart);
+        Swipe.addAction(pressDown);
+        Swipe.addAction(moveToEnd);
+        Swipe.addAction(pressUp);
+
+        driver.perform(Arrays.asList(Swipe));
+
+        driver.findElement(MobileBy.AccessibilityId("Stratus"));
     }
 }
