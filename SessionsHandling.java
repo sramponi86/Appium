@@ -58,4 +58,36 @@ public class SessionsHandling {
 
         assert(landing_page.getText().contains("alice"));
     }
+
+    @Test
+    public void testPageSource() {
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        //WebElement element = driver.findElement(MobileBy.AccessibilityId("Login Screen"));
+        WebElement screen = wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("Login Screen")));
+        screen.click();
+
+        try{ Thread.sleep(1000);} catch (Exception ing) {}
+        //extract the xml related to a specific app page to investigate the structure of it and the elements
+        System.out.println(driver.getPageSource());
+    }
+
+    @Test
+    public void echoBox() {
+        WebDriverWait wait = new WebDriverWait(driver, 10);
+        //WebElement element = driver.findElement(MobileBy.AccessibilityId("Login Screen"));
+        WebElement screen = wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("Echo Box")));
+        screen.click();
+
+        WebElement inputBox = wait.until(ExpectedConditions.presenceOfElementLocated(MobileBy.AccessibilityId("messageInput")));
+        inputBox.sendKeys("Testing!");
+        WebElement save_btn = driver.findElement(
+                MobileBy.xpath("//android.view.ViewGroup[@content-desc=\"messageSaveBtn\"]/android.widget.TextView"));
+
+        save_btn.click();
+
+        WebElement result = wait.until(ExpectedConditions.presenceOfElementLocated(
+                MobileBy.xpath("//android.widget.TextView[@content-desc=\"Testing!\"]")));
+
+        assert(result.getText().contains("Testing!"));
+    }
 }
